@@ -115,7 +115,7 @@
         class="pb-3 px-1 text-sm font-semibold flex items-center space-x-2 border-b-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap"
       >
         <i data-lucide="calculator" class="w-4 h-4"></i>
-        <span>Presupuesto Anual (Real vs Plan)</span>
+        <span>Presupuesto (Anual / Mensual)</span>
       </button>
 
       <button
@@ -152,44 +152,41 @@
     <!-- ========================================== -->
     <section id="tab-dashboard" class="space-y-6">
       
-      <!-- DASHBOARD FILTER BY CENTER & SCOPE -->
-      <div id="dashFilterContainer" class="bg-white p-3 rounded-xl border border-slate-200 flex flex-col md:flex-row items-center justify-between gap-4">
-        <div class="flex items-center space-x-2 text-sm text-slate-600 font-medium">
+      <!-- FILTER BAR FOR DASHBOARD -->
+      <div class="bg-white p-4 rounded-xl border border-slate-200 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center space-x-2 text-sm text-slate-600 font-semibold">
           <i data-lucide="filter" class="w-4 h-4 text-slate-400"></i>
-          <span>Filtros de Análisis:</span>
+          <span>Filtros Dashboard:</span>
         </div>
         <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
           <select
-            id="dashScopeFilter"
-            onchange="renderDashboard()"
-            class="bg-slate-50 border border-slate-300 text-slate-700 text-xs rounded-lg p-2 font-semibold"
-          >
-            <option value="ALL">📁 Todas las Contabilidades (Inst. + Personal)</option>
-            <option value="Institucional">🏢 Contabilidad Institucional</option>
-            <option value="Personal">👤 Contabilidad Personal</option>
-          </select>
-
-          <select
             id="dashCenterFilter"
             onchange="renderDashboard()"
-            class="bg-slate-50 border border-slate-300 text-slate-700 text-xs rounded-lg p-2 font-medium"
+            class="bg-slate-50 border border-slate-300 text-slate-700 text-xs rounded-lg p-2.5 font-semibold"
           >
-            <option value="ALL">🏛️ Todos los Centros Consolidados</option>
+            <!-- Populated JS -->
+          </select>
+          <select
+            id="dashScopeFilter"
+            onchange="renderDashboard()"
+            class="bg-slate-50 border border-slate-300 text-slate-700 text-xs rounded-lg p-2.5 font-semibold"
+          >
+            <option value="ALL">🌐 Todas las Contabilidades</option>
+            <option value="Institucional">🏢 Contabilidad Institucional</option>
+            <option value="Personal">👤 Contabilidad Personal</option>
           </select>
         </div>
       </div>
 
-      <!-- METRICS CARDS -->
+      <!-- KPI METRICS CARDS -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        
-        <!-- CARD INGRESOS -->
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex items-center justify-between">
           <div>
             <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Ingresos</p>
             <h3 id="kpiIngresos" class="text-2xl font-black text-emerald-600 mt-1">$0.00</h3>
             <div class="flex items-center text-emerald-600 text-xs font-semibold mt-2">
               <i data-lucide="arrow-up-right" class="w-4 h-4 mr-0.5"></i>
-              <span>Entradas registradas</span>
+              <span>Entradas consolidadas</span>
             </div>
           </div>
           <div class="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
@@ -197,7 +194,6 @@
           </div>
         </div>
 
-        <!-- CARD EGRESOS -->
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex items-center justify-between">
           <div>
             <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Egresos</p>
@@ -212,89 +208,94 @@
           </div>
         </div>
 
-        <!-- CARD BALANCE NETO -->
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex items-center justify-between">
           <div>
             <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Balance Operativo</p>
             <h3 id="kpiBalance" class="text-2xl font-black text-indigo-600 mt-1">$0.00</h3>
             <div class="flex items-center text-slate-500 text-xs font-semibold mt-2">
-              <span>Superávit / Líquido disponible</span>
+              <span>Disponibilidad líquida</span>
             </div>
           </div>
           <div class="w-12 h-12 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center">
             <i data-lucide="dollar-sign" class="w-6 h-6"></i>
           </div>
         </div>
-
       </div>
 
-      <!-- CHARTS CONTAINER -->
+      <!-- CHARTS ROW -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        
-        <!-- BAR CHART -->
-        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col justify-between">
-          <div>
-            <h3 class="text-base font-bold text-slate-800">Comparativa por Centro</h3>
-            <p class="text-xs text-slate-500">Relación de Ingresos vs Egresos por sede</p>
-          </div>
-          <div class="h-64 mt-4 relative">
-            <canvas id="barChartCanvas"></canvas>
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+          <h3 class="text-base font-bold text-slate-800">Comparativa Ingresos vs Egresos por Centro</h3>
+          <p class="text-xs text-slate-500 mb-4">Relación de movimientos acumulados</p>
+          <div class="h-64 relative">
+            <canvas id="barChart"></canvas>
           </div>
         </div>
 
-        <!-- PIE CHART -->
-        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col justify-between">
-          <div>
-            <h3 class="text-base font-bold text-slate-800">Distribución de Movimientos</h3>
-            <p class="text-xs text-slate-500">Monto total agrupado por Partidas / Categorías</p>
-          </div>
-          <div class="h-64 mt-4 relative flex items-center justify-center">
-            <canvas id="pieChartCanvas"></canvas>
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+          <h3 class="text-base font-bold text-slate-800">Distribución por Partidas</h3>
+          <p class="text-xs text-slate-500 mb-4">Participación por categoría contable</p>
+          <div class="h-64 relative flex items-center justify-center">
+            <canvas id="pieChart"></canvas>
           </div>
         </div>
-
       </div>
 
-      <!-- RECENT TRANSACTIONS TABLE SUMMARY -->
+      <!-- RECENT TRANSACTIONS -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-base font-bold text-slate-800">Últimos Registros</h3>
-          <button 
-            onclick="switchTab('transactions')"
-            class="text-xs font-semibold text-amber-600 hover:text-amber-700 inline-flex items-center space-x-1"
-          >
-            <span>Ver todas las transacciones</span>
-            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+          <button onclick="switchTab('transactions')" class="text-xs font-semibold text-amber-600 hover:text-amber-700">
+            Ver todas las transacciones →
           </button>
         </div>
-
         <div id="recentTransactionsList" class="divide-y divide-slate-100">
-          <!-- Populated via JS -->
+          <!-- Populated JS -->
         </div>
       </div>
 
     </section>
 
     <!-- ========================================== -->
-    <!-- TAB NEW: PRESUPUESTO ANUAL (REAL VS PLAN) -->
+    <!-- TAB 2: PRESUPUESTO ANUAL Y MENSUAL POR CENTRO -->
     <!-- ========================================== -->
     <section id="tab-budget" class="space-y-6 hidden">
       
       <!-- HEADER PRESUPUESTO -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <span class="text-xs font-bold text-amber-600 uppercase tracking-wider">Control de Ejecución Anual</span>
-          <h3 class="text-lg font-bold text-slate-800">Presupuesto Proyectado vs. Real Ejecutado</h3>
-          <p class="text-xs text-slate-500">Monitoreo del avance de la planificación por partidas institucionales y personales</p>
+          <span class="text-xs font-bold text-amber-600 uppercase tracking-wider">Planificación del Ejercicio</span>
+          <h3 class="text-lg font-bold text-slate-800">Definición & Control de Presupuesto por Centro</h3>
+          <p class="text-xs text-slate-500">Configuración del presupuesto inicial (Anual / Mensual) por partidas y comparación vs. ejecución real</p>
         </div>
         
-        <div class="flex items-center space-x-3">
+        <div class="flex flex-wrap items-center gap-3">
           <select
             id="budgetCenterFilter"
             onchange="renderBudgetTab()"
             class="bg-slate-50 border border-slate-300 text-slate-700 text-xs rounded-lg p-2.5 font-semibold"
           >
-            <option value="ALL">🏛️ Todos los Centros</option>
+            <!-- Populated JS -->
+          </select>
+
+          <select
+            id="budgetMonthFilter"
+            onchange="renderBudgetTab()"
+            class="bg-slate-50 border border-slate-300 text-slate-700 text-xs rounded-lg p-2.5 font-semibold"
+          >
+            <option value="ALL">📅 Todo el Año (Proyectado)</option>
+            <option value="1">Enero</option>
+            <option value="2">Febrero</option>
+            <option value="3">Marzo</option>
+            <option value="4">Abril</option>
+            <option value="5">Mayo</option>
+            <option value="6">Junio</option>
+            <option value="7">Julio</option>
+            <option value="8">Agosto</option>
+            <option value="9">Septiembre</option>
+            <option value="10" selected>Octubre</option>
+            <option value="11">Noviembre</option>
+            <option value="12">Diciembre</option>
           </select>
 
           <select
@@ -305,27 +306,36 @@
             <option value="Institucional">🏢 Contabilidad Institucional</option>
             <option value="Personal">👤 Contabilidad Personal</option>
           </select>
+
+          <button
+            id="btnEditBudgetPlan"
+            onclick="openBudgetEditModal()"
+            class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold px-3 py-2.5 rounded-lg flex items-center space-x-1.5 shadow-sm"
+          >
+            <i data-lucide="edit-3" class="w-4 h-4"></i>
+            <span>Cargar / Editar Presupuesto</span>
+          </button>
         </div>
       </div>
 
       <!-- PRESUPUESTO SUMMARY CARDS -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="bg-white p-5 rounded-xl border border-slate-200">
-          <span class="text-xs text-slate-400 font-bold uppercase">Presupuesto Anual Proyectado</span>
+          <span class="text-xs text-slate-400 font-bold uppercase">Presupuesto Asignado</span>
           <h4 id="bgTotalPlanned" class="text-2xl font-black text-slate-800 mt-1">$0.00</h4>
-          <span class="text-xs text-slate-500">Suma meta asignada para el año</span>
+          <span id="bgPlannedSublabel" class="text-xs text-slate-500">Monto planificado para el periodo</span>
         </div>
 
         <div class="bg-white p-5 rounded-xl border border-slate-200">
-          <span class="text-xs text-slate-400 font-bold uppercase">Ejecutado Real a la Fecha</span>
+          <span class="text-xs text-slate-400 font-bold uppercase">Ejecución Real</span>
           <h4 id="bgTotalExecuted" class="text-2xl font-black text-amber-600 mt-1">$0.00</h4>
-          <span class="text-xs text-slate-500">Registros reales acumulados</span>
+          <span class="text-xs text-slate-500">Transacciones reales registradas</span>
         </div>
 
         <div class="bg-white p-5 rounded-xl border border-slate-200">
-          <span class="text-xs text-slate-400 font-bold uppercase">% Cumplimiento Global</span>
+          <span class="text-xs text-slate-400 font-bold uppercase">% Cumplimiento / Desviación</span>
           <h4 id="bgTotalPercent" class="text-2xl font-black text-indigo-600 mt-1">0%</h4>
-          <span class="text-xs text-slate-500">Estado de avance presupuestario</span>
+          <span class="text-xs text-slate-500">Porcentaje de avance ejecutado</span>
         </div>
       </div>
 
@@ -342,9 +352,9 @@
               <tr class="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase tracking-wider">
                 <th class="py-3 px-4">Partida / Categoría</th>
                 <th class="py-3 px-4">Tipo</th>
-                <th class="py-3 px-4 text-right">Presupuesto Anual</th>
+                <th class="py-3 px-4 text-right">Presupuesto Proyectado</th>
                 <th class="py-3 px-4 text-right">Ejecutado Real</th>
-                <th class="py-3 px-4 text-right">Diferencia / Disponible</th>
+                <th class="py-3 px-4 text-right">Diferencia</th>
                 <th class="py-3 px-4 text-center">Avance (%)</th>
               </tr>
             </thead>
@@ -358,7 +368,7 @@
     </section>
 
     <!-- ========================================== -->
-    <!-- TAB 2: TRANSACTIONS (INGRESOS Y EGRESOS) -->
+    <!-- TAB 3: TRANSACTIONS (INGRESOS Y EGRESOS) -->
     <!-- ========================================== -->
     <section id="tab-transactions" class="space-y-6 hidden">
       
@@ -366,13 +376,13 @@
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 flex flex-col md:flex-row gap-4 justify-between items-center">
         
         <!-- SEARCH -->
-        <div class="relative w-full md:w-72">
+        <div class="relative w-full md:w-64">
           <i data-lucide="search" class="w-4 h-4 absolute left-3 top-3 text-slate-400"></i>
           <input
             type="text"
             id="txSearchInput"
             oninput="renderTransactionsTable()"
-            placeholder="Buscar por concepto o categoría..."
+            placeholder="Buscar concepto o referencia..."
             class="w-full pl-9 pr-4 py-2 text-sm bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
           />
         </div>
@@ -408,6 +418,22 @@
             <option value="egreso">🔴 Egresos</option>
           </select>
 
+          <select
+            id="txAccountFilter"
+            onchange="renderTransactionsTable()"
+            class="bg-slate-50 border border-slate-300 text-slate-700 text-xs rounded-lg p-2.5 font-medium"
+          >
+            <option value="ALL">💳 Origen / Cuenta (Todas)</option>
+            <option value="Caja Chica (Cash USD)">💵 Caja Chica (Cash USD)</option>
+            <option value="Zelle">⚡ Zelle</option>
+            <option value="Bank of America (BofA)">🏦 Bank of America (BofA)</option>
+            <option value="Mercantil">🏦 Banco Mercantil</option>
+            <option value="Banesco">🏦 Banesco</option>
+            <option value="Provincial">🏦 BBVA Provincial</option>
+            <option value="Banesco Panamá">🏦 Banesco Panamá</option>
+            <option value="BNC">🏦 Banco Nacional de Crédito</option>
+          </select>
+
           <button 
             onclick="resetTxFilters()"
             class="p-2 text-slate-400 hover:text-slate-600 rounded-lg border border-slate-200"
@@ -427,6 +453,7 @@
               <tr class="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase tracking-wider">
                 <th class="py-3 px-4">Fecha</th>
                 <th class="py-3 px-4">Centro</th>
+                <th class="py-3 px-4">Origen / Banco</th>
                 <th class="py-3 px-4">Ámbito</th>
                 <th class="py-3 px-4">Tipo</th>
                 <th class="py-3 px-4">Partida / Categoría</th>
@@ -445,16 +472,14 @@
     </section>
 
     <!-- ========================================== -->
-    <!-- TAB 3: CENTRES -->
+    <!-- TAB 4: CENTROS -->
     <!-- ========================================== -->
     <section id="tab-centers" class="space-y-6 hidden">
-      
       <div class="flex justify-between items-center">
         <div>
           <h3 class="text-lg font-bold text-slate-800">Directorio de Centros Financieros</h3>
-          <p class="text-xs text-slate-500">Resumen y asignación de presupuestos asignados por centro</p>
+          <p class="text-xs text-slate-500">Resumen y asignación presupuestaria por centro</p>
         </div>
-
         <button
           id="btnNewCenter"
           onclick="openCenterModal()"
@@ -468,45 +493,33 @@
       <div id="centersGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Populated via JS -->
       </div>
-
     </section>
 
     <!-- ========================================== -->
-    <!-- TAB 4: ADMIN / ROLES -->
+    <!-- TAB 5: ADMIN / ROLES -->
     <!-- ========================================== -->
     <section id="tab-admin" class="space-y-6 hidden">
-      
       <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start space-x-3">
         <i data-lucide="shield-check" class="w-6 h-6 text-amber-700 flex-shrink-0 mt-0.5"></i>
         <div>
           <h4 class="text-sm font-bold text-amber-900">Panel de Control de Roles y Accesos</h4>
           <p class="text-xs text-amber-800 mt-0.5">
-            Desde aquí puedes asignar usuarios a centros específicos, otorgar permisos de auditoría o definir administradores generales del sistema.
+            Gestión centralizada de usuarios, roles en el sistema y asignación de permisos por centros.
           </p>
         </div>
       </div>
 
-      <!-- ROLES INFO -->
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-        <h4 class="text-sm font-bold text-slate-800 mb-4">Niveles de Permisos Configurados</h4>
-        <div id="rolesMatrixContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <!-- Populated via JS -->
-        </div>
-      </div>
-
-      <!-- USERS TABLE -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         <div class="p-4 border-b border-slate-200 flex justify-between items-center">
-          <h4 class="text-base font-bold text-slate-800">Usuarios Registrados (<span id="usersCount">0</span>)</h4>
+          <h4 class="text-base font-bold text-slate-800">Usuarios Registrados</h4>
           <button
             onclick="openUserModal()"
-            class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold px-3.5 py-2 rounded-lg flex items-center space-x-2"
+            class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold px-3 py-2 rounded-lg flex items-center space-x-1.5"
           >
             <i data-lucide="user-plus" class="w-4 h-4"></i>
-            <span>Crear Nuevo Usuario</span>
+            <span>Crear Usuario</span>
           </button>
         </div>
-
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse">
             <thead>
@@ -524,13 +537,12 @@
           </table>
         </div>
       </div>
-
     </section>
 
   </main>
 
   <!-- ========================================== -->
-  <!-- MODAL 1: NUEVO MOVIMIENTO -->
+  <!-- MODALS -->
   <!-- ========================================== -->
   <div id="modalTransaction" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg p-6 space-y-4">
@@ -542,13 +554,10 @@
       </div>
 
       <form id="formTransaction" onsubmit="handleSaveTransaction(event)" class="space-y-4">
-        
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Centro</label>
-            <select id="formTxCenter" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm">
-              <!-- Populated JS -->
-            </select>
+            <select id="formTxCenter" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm"></select>
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Contabilidad / Ámbito</label>
@@ -560,90 +569,119 @@
         </div>
 
         <div class="grid grid-cols-2 gap-3">
-          <button
-            type="button"
-            id="btnTypeIngreso"
-            onclick="setTxType('ingreso')"
-            class="p-3 rounded-lg border text-sm font-bold flex items-center justify-center space-x-2 bg-emerald-50 border-emerald-500 text-emerald-700"
-          >
+          <button type="button" id="btnTypeIngreso" onclick="setTxType('ingreso')" class="p-3 rounded-lg border text-sm font-bold flex items-center justify-center space-x-2 bg-emerald-50 border-emerald-500 text-emerald-700">
             <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
             <span>Ingreso</span>
           </button>
-
-          <button
-            type="button"
-            id="btnTypeEgreso"
-            onclick="setTxType('egreso')"
-            class="p-3 rounded-lg border text-sm font-bold flex items-center justify-center space-x-2 border-slate-200 text-slate-500"
-          >
+          <button type="button" id="btnTypeEgreso" onclick="setTxType('egreso')" class="p-3 rounded-lg border text-sm font-bold flex items-center justify-center space-x-2 border-slate-200 text-slate-500">
             <i data-lucide="arrow-down-right" class="w-4 h-4"></i>
             <span>Egreso</span>
           </button>
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Partida / Categoría</label>
-          <select id="formTxCategory" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm">
-            <!-- Populated JS -->
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Origen / Medio de Pago</label>
+          <select id="formTxAccount" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm font-medium">
+            <option value="Caja Chica (Cash USD)">💵 Caja Chica (Cash USD)</option>
+            <option value="Zelle">⚡ Zelle</option>
+            <option value="Bank of America (BofA)">🏦 Bank of America (BofA)</option>
+            <option value="Mercantil">🏦 Banco Mercantil</option>
+            <option value="Banesco">🏦 Banesco</option>
+            <option value="Provincial">🏦 BBVA Provincial</option>
+            <option value="Banesco Panamá">🏦 Banesco Panamá</option>
+            <option value="BNC">🏦 Banco Nacional de Crédito (BNC)</option>
+            <option value="PayPal / Otro">💳 PayPal / Otro</option>
           </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Partida / Categoría</label>
+          <select id="formTxCategory" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm"></select>
         </div>
 
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Monto ($)</label>
-            <input
-              type="number"
-              step="0.01"
-              id="formTxAmount"
-              placeholder="0.00"
-              required
-              class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm font-bold text-slate-800"
-            />
+            <input type="number" step="0.01" id="formTxAmount" placeholder="0.00" required class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm font-bold text-slate-800" />
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Fecha</label>
-            <input
-              type="date"
-              id="formTxDate"
-              required
-              class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm"
-            />
+            <input type="date" id="formTxDate" required class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm" />
           </div>
         </div>
 
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Concepto / Descripción</label>
-          <textarea
-            id="formTxDesc"
-            rows="2"
-            placeholder="Ej: Pago de retiros o pensión..."
-            required
-            class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm"
-          ></textarea>
+          <textarea id="formTxDesc" rows="2" placeholder="Ej: Pago de servicio mensual..." required class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm"></textarea>
         </div>
 
         <div class="flex justify-end space-x-3 pt-2">
-          <button
-            type="button"
-            onclick="closeTransactionModal()"
-            class="px-4 py-2 border border-slate-300 text-slate-600 rounded-lg text-sm font-semibold hover:bg-slate-50"
-          >
-            Cancelar
-          </button>
-          <button
-            type="submit"
-            class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-sm font-semibold"
-          >
-            Guardar Registro
-          </button>
+          <button type="button" onclick="closeTransactionModal()" class="px-4 py-2 border border-slate-300 text-slate-600 rounded-lg text-sm font-semibold hover:bg-slate-50">Cancelar</button>
+          <button type="submit" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-sm font-semibold">Guardar Registro</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- ========================================== -->
-  <!-- MODAL 2: NUEVO USUARIO -->
-  <!-- ========================================== -->
+  <div id="modalBudgetEdit" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg p-6 space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <div>
+          <h3 class="text-lg font-bold text-slate-800">Definir Presupuesto Inicial</h3>
+          <p class="text-xs text-slate-500">Apertura del Ejercicio Económico del Centro</p>
+        </div>
+        <button onclick="closeBudgetEditModal()" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x-circle" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="formBudgetEdit" onsubmit="handleSaveBudgetPlan(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Centro Seleccionado</label>
+          <select id="formBudgetCenter" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm font-semibold"></select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Ámbito</label>
+            <select id="formBudgetScope" onchange="updateFormBudgetCategories()" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm">
+              <option value="Institucional">🏢 Institucional</option>
+              <option value="Personal">👤 Personal</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tipo de Partida</label>
+            <select id="formBudgetType" onchange="updateFormBudgetCategories()" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm">
+              <option value="ingreso">🟢 Ingreso Proyectado</option>
+              <option value="egreso">🔴 Egreso Límite</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Partida Presupuestaria</label>
+          <select id="formBudgetCategory" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm"></select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Presupuesto Anual Total ($)</label>
+            <input type="number" step="100" id="formBudgetAnnualAmount" placeholder="Ej: 24000" required class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm font-bold text-slate-800" oninput="calculateMonthlyBudget(this.value)" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Promedio Mensual ($)</label>
+            <input type="text" id="formBudgetMonthlyCalculated" disabled placeholder="0.00 / mes" class="w-full bg-slate-100 border border-slate-200 rounded-lg p-2.5 text-sm font-semibold text-slate-500" />
+          </div>
+        </div>
+
+        <div class="flex justify-end space-x-3 pt-2">
+          <button type="button" onclick="closeBudgetEditModal()" class="px-4 py-2 border border-slate-300 text-slate-600 rounded-lg text-sm font-semibold hover:bg-slate-50">Cancelar</button>
+          <button type="submit" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-sm font-semibold">Establecer Presupuesto</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <div id="modalUser" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
       <div class="flex justify-between items-center border-b border-slate-100 pb-3">
@@ -656,69 +694,33 @@
       <form id="formUser" onsubmit="handleSaveUser(event)" class="space-y-4">
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nombre Completo</label>
-          <input
-            type="text"
-            id="formUserName"
-            required
-            placeholder="Ej: Pedro Morales"
-            class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm"
-          />
+          <input type="text" id="formUserName" required placeholder="Ej: Pedro Morales" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm" />
         </div>
-
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Correo Electrónico</label>
-          <input
-            type="email"
-            id="formUserEmail"
-            required
-            placeholder="ejemplo@opusdei.org"
-            class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm"
-          />
+          <input type="email" id="formUserEmail" required placeholder="ejemplo@opusdei.org" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm" />
         </div>
-
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Rol en el Sistema</label>
-          <select
-            id="formUserRole"
-            onchange="toggleUserCenterSelect()"
-            class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm font-medium"
-          >
+          <select id="formUserRole" onchange="toggleUserCenterSelect()" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm font-medium">
             <option value="AdminCentro">Administrador de Centro</option>
             <option value="Operador">Operador / Auxiliar</option>
             <option value="Auditor">Auditor (Acceso Lectura Global)</option>
             <option value="SuperAdmin">Super Administrador</option>
           </select>
         </div>
-
         <div id="userCenterSelectWrapper">
           <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Centro Asignado</label>
-          <select id="formUserCenter" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm">
-            <!-- Populated JS -->
-          </select>
+          <select id="formUserCenter" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm"></select>
         </div>
-
         <div class="flex justify-end space-x-3 pt-2">
-          <button
-            type="button"
-            onclick="closeUserModal()"
-            class="px-4 py-2 border border-slate-300 text-slate-600 rounded-lg text-sm font-semibold"
-          >
-            Cancelar
-          </button>
-          <button
-            type="submit"
-            class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-sm font-semibold"
-          >
-            Crear Usuario
-          </button>
+          <button type="button" onclick="closeUserModal()" class="px-4 py-2 border border-slate-300 text-slate-600 rounded-lg text-sm font-semibold">Cancelar</button>
+          <button type="submit" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-sm font-semibold">Crear Usuario</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- ========================================== -->
-  <!-- MODAL 3: NUEVO CENTRO -->
-  <!-- ========================================== -->
   <div id="modalCenter" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
       <div class="flex justify-between items-center border-b border-slate-100 pb-3">
@@ -731,61 +733,23 @@
       <form id="formCenter" onsubmit="handleSaveCenter(event)" class="space-y-4">
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nombre del Centro</label>
-          <input
-            type="text"
-            id="formCenterName"
-            required
-            placeholder="Ej: Centro Cultural Miraflores"
-            class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm"
-          />
+          <input type="text" id="formCenterName" required placeholder="Ej: Centro Cultural Miraflores" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm" />
         </div>
-
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Ciudad / Ubicación</label>
-          <input
-            type="text"
-            id="formCenterCity"
-            required
-            placeholder="Ej: Valencia"
-            class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm"
-          />
+          <input type="text" id="formCenterCity" required placeholder="Ej: Valencia" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm" />
         </div>
-
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Director / Encargado</label>
-          <input
-            type="text"
-            id="formCenterDirector"
-            placeholder="Ej: Lic. Andrés Páez"
-            class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm"
-          />
+          <input type="text" id="formCenterDirector" placeholder="Ej: Lic. Andrés Páez" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm" />
         </div>
-
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Presupuesto Anual Asignado ($)</label>
-          <input
-            type="number"
-            id="formCenterBudget"
-            required
-            placeholder="20000"
-            class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm"
-          />
+          <input type="number" id="formCenterBudget" required placeholder="20000" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm" />
         </div>
-
         <div class="flex justify-end space-x-3 pt-2">
-          <button
-            type="button"
-            onclick="closeCenterModal()"
-            class="px-4 py-2 border border-slate-300 text-slate-600 rounded-lg text-sm font-semibold"
-          >
-            Cancelar
-          </button>
-          <button
-            type="submit"
-            class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-sm font-semibold"
-          >
-            Guardar Centro
-          </button>
+          <button type="button" onclick="closeCenterModal()" class="px-4 py-2 border border-slate-300 text-slate-600 rounded-lg text-sm font-semibold">Cancelar</button>
+          <button type="submit" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-sm font-semibold">Guardar Centro</button>
         </div>
       </form>
     </div>
@@ -802,7 +766,6 @@
   <!-- JAVASCRIPT APP LOGIC -->
   <!-- ========================================== -->
   <script>
-    // --- INITIAL MOCK DATA ---
     let centers = [
       { id: 'c1', name: 'Centro Cultural El Roble', city: 'Caracas', director: 'Dra. María Fernández', budget: 35000 },
       { id: 'c2', name: 'Residencia Universitaria Los Cedros', city: 'Montevideo', director: 'P. Alejandro Gómez', budget: 52000 },
@@ -810,89 +773,41 @@
       { id: 'c4', name: 'Casa de Encuentros La Cantera', city: 'Santiago', director: 'Sra. Carmen Silva', budget: 65000 },
     ];
 
-    // CATEGORÍAS SEGÚN INSTRUCCIONES ESPECÍFICAS
     const categoriesByScope = {
       Institucional: {
-        ingreso: [
-          'Pensiones de residentes',
-          'Donaciones',
-          'Programas y actividades',
-          'Fondo de alimentación'
-        ],
-        egreso: [
-          'Sueldos de empleados',
-          'Servicios (luz, agua, Internet)',
-          'Mantenimiento del inmueble',
-          'Reparaciones y mantenimiento de equipos',
-          'Oratorio (ornamentos, reparaciones, etc)',
-          'Contrato de servicio (pago de la Administración)'
-        ]
+        ingreso: ['Pensiones de residentes', 'Donaciones', 'Programas y actividades', 'Fondo de alimentación'],
+        egreso: ['Sueldos de empleados', 'Servicios (luz, agua, Internet)', 'Mantenimiento del inmueble', 'Reparaciones y mantenimiento de equipos', 'Oratorio (ornamentos, reparaciones, etc)', 'Contrato de servicio (pago de la Administración)']
       },
       Personal: {
-        ingreso: [
-          'Sueldos/ingresos profesionales',
-          'Ayuda de familia',
-          'Donativos',
-          'Otros'
-        ],
-        egreso: [
-          'Gastos ordinarios',
-          'Gastos extraordinarios',
-          'Medicinas y gastos médicos',
-          'Carros',
-          'Actividades (curso anual, curso de Retiro, convivencias)',
-          'Ropa'
-        ]
+        ingreso: ['Sueldos/ingresos profesionales', 'Ayuda de familia', 'Donativos', 'Otros'],
+        egreso: ['Gastos ordinarios', 'Gastos extraordinarios', 'Medicinas y gastos médicos', 'Carros', 'Actividades (curso anual, curso de Retiro, convivencias)', 'Ropa']
       }
     };
 
-    // PRESUPUESTO PROYECTADO INICIAL (PLAN ANUAL POR CATEGORÍA)
-    let annualBudgetPlan = {
-      Institucional: {
-        ingreso: {
-          'Pensiones de residentes': 24000,
-          'Donaciones': 18000,
-          'Programas y actividades': 12000,
-          'Fondo de alimentación': 8000
+    let centerBudgets = {
+      c1: {
+        Institucional: {
+          ingreso: { 'Pensiones de residentes': 24000, 'Donaciones': 18000, 'Programas y actividades': 12000, 'Fondo de alimentación': 8000 },
+          egreso: { 'Sueldos de empleados': 16000, 'Servicios (luz, agua, Internet)': 6000, 'Mantenimiento del inmueble': 10000, 'Reparaciones y mantenimiento de equipos': 4000, 'Oratorio (ornamentos, reparaciones, etc)': 3500, 'Contrato de servicio (pago de la Administración)': 12000 }
         },
-        egreso: {
-          'Sueldos de empleados': 16000,
-          'Servicios (luz, agua, Internet)': 6000,
-          'Mantenimiento del inmueble': 10000,
-          'Reparaciones y mantenimiento de equipos': 4000,
-          'Oratorio (ornamentos, reparaciones, etc)': 3500,
-          'Contrato de servicio (pago de la Administración)': 12000
-        }
-      },
-      Personal: {
-        ingreso: {
-          'Sueldos/ingresos profesionales': 30000,
-          'Ayuda de familia': 15000,
-          'Donativos': 5000,
-          'Otros': 3000
-        },
-        egreso: {
-          'Gastos ordinarios': 14000,
-          'Gastos extraordinarios': 6000,
-          'Medicinas y gastos médicos': 4500,
-          'Carros': 5000,
-          'Actividades (curso anual, curso de Retiro, convivencias)': 8000,
-          'Ropa': 3500
+        Personal: {
+          ingreso: { 'Sueldos/ingresos profesionales': 30000, 'Ayuda de familia': 15000, 'Donativos': 5000, 'Otros': 3000 },
+          egreso: { 'Gastos ordinarios': 14000, 'Gastos extraordinarios': 6000, 'Medicinas y gastos médicos': 4500, 'Carros': 5000, 'Actividades (curso anual, curso de Retiro, convivencias)': 8000, 'Ropa': 3500 }
         }
       }
     };
 
     let transactions = [
-      { id: 't1', centerId: 'c1', scope: 'Institucional', type: 'ingreso', category: 'Pensiones de residentes', amount: 3500, date: '2026-10-02', description: 'Pago de pensiones mensual del centro', registeredBy: 'María Fernández' },
-      { id: 't2', centerId: 'c1', scope: 'Institucional', type: 'egreso', category: 'Servicios (luz, agua, Internet)', amount: 420, date: '2026-10-05', description: 'Pago de servicio eléctrico e internet de alta velocidad', registeredBy: 'María Fernández' },
-      { id: 't3', centerId: 'c2', scope: 'Institucional', type: 'ingreso', category: 'Donaciones', amount: 8200, date: '2026-10-10', description: 'Donación para mejoras de infraestructura', registeredBy: 'Alejandro Gómez' },
-      { id: 't4', centerId: 'c2', scope: 'Institucional', type: 'egreso', category: 'Mantenimiento del inmueble', amount: 1450, date: '2026-10-12', description: 'Reparación de filtración en cocina principal', registeredBy: 'Alejandro Gómez' },
-      { id: 't5', centerId: 'c3', scope: 'Personal', type: 'ingreso', category: 'Sueldos/ingresos profesionales', amount: 2800, date: '2026-10-15', description: 'Ingreso por honorarios profesionales', registeredBy: 'Carlos Mendoza' },
-      { id: 't6', centerId: 'c3', scope: 'Personal', type: 'egreso', category: 'Actividades (curso anual, curso de Retiro, convivencias)', amount: 950, date: '2026-10-18', description: 'Cuota de participación en curso de retiro', registeredBy: 'Carlos Mendoza' },
-      { id: 't7', centerId: 'c4', scope: 'Institucional', type: 'ingreso', category: 'Programas y actividades', amount: 5600, date: '2026-10-20', description: 'Inscripciones para actividades institucionales', registeredBy: 'Carmen Silva' },
-      { id: 't8', centerId: 'c4', scope: 'Institucional', type: 'egreso', category: 'Oratorio (ornamentos, reparaciones, etc)', amount: 680, date: '2026-10-22', description: 'Adquisición de ornamentos y mantenimiento', registeredBy: 'Carmen Silva' },
-      { id: 't9', centerId: 'c1', scope: 'Personal', type: 'egreso', category: 'Medicinas y gastos médicos', amount: 350, date: '2026-10-25', description: 'Consultas médicas y medicamentos', registeredBy: 'María Fernández' },
-      { id: 't10', centerId: 'c2', scope: 'Institucional', type: 'egreso', category: 'Sueldos de empleados', amount: 3100, date: '2026-10-28', description: 'Pago de nómina de personal de apoyo', registeredBy: 'Alejandro Gómez' },
+      { id: 't1', centerId: 'c1', scope: 'Institucional', type: 'ingreso', account: 'Zelle', category: 'Pensiones de residentes', amount: 3500, date: '2026-10-02', description: 'Pago de pensiones mensual del centro', registeredBy: 'María Fernández' },
+      { id: 't2', centerId: 'c1', scope: 'Institucional', type: 'egreso', account: 'Mercantil', category: 'Servicios (luz, agua, Internet)', amount: 420, date: '2026-10-05', description: 'Pago de servicio eléctrico e internet de alta velocidad', registeredBy: 'María Fernández' },
+      { id: 't3', centerId: 'c2', scope: 'Institucional', type: 'ingreso', account: 'Bank of America (BofA)', category: 'Donaciones', amount: 8200, date: '2026-10-10', description: 'Donación para mejoras de infraestructura', registeredBy: 'Alejandro Gómez' },
+      { id: 't4', centerId: 'c2', scope: 'Institucional', type: 'egreso', account: 'Caja Chica (Cash USD)', category: 'Mantenimiento del inmueble', amount: 1450, date: '2026-10-12', description: 'Reparación de filtración en cocina principal', registeredBy: 'Alejandro Gómez' },
+      { id: 't5', centerId: 'c3', scope: 'Personal', type: 'ingreso', account: 'Banesco', category: 'Sueldos/ingresos profesionales', amount: 2800, date: '2026-10-15', description: 'Ingreso por honorarios profesionales', registeredBy: 'Carlos Mendoza' },
+      { id: 't6', centerId: 'c3', scope: 'Personal', type: 'egreso', category: 'Actividades (curso anual, curso de Retiro, convivencias)', account: 'Caja Chica (Cash USD)', amount: 950, date: '2026-10-18', description: 'Cuota de participación en curso de retiro', registeredBy: 'Carlos Mendoza' },
+      { id: 't7', centerId: 'c4', scope: 'Institucional', type: 'ingreso', account: 'Provincial', category: 'Programas y actividades', amount: 5600, date: '2026-10-20', description: 'Inscripciones para actividades institucionales', registeredBy: 'Carmen Silva' },
+      { id: 't8', centerId: 'c4', scope: 'Institucional', type: 'egreso', account: 'Banesco Panamá', category: 'Oratorio (ornamentos, reparaciones, etc)', amount: 680, date: '2026-10-22', description: 'Adquisición de ornamentos y mantenimiento', registeredBy: 'Carmen Silva' },
+      { id: 't9', centerId: 'c1', scope: 'Personal', type: 'egreso', account: 'Caja Chica (Cash USD)', category: 'Medicinas y gastos médicos', amount: 350, date: '2026-10-25', description: 'Consultas médicas y medicamentos', registeredBy: 'María Fernández' },
+      { id: 't10', centerId: 'c2', scope: 'Institucional', type: 'egreso', account: 'Mercantil', category: 'Sueldos de empleados', amount: 3100, date: '2026-10-28', description: 'Pago de nómina de personal de apoyo', registeredBy: 'Alejandro Gómez' },
     ];
 
     let users = [
@@ -904,39 +819,32 @@
     ];
 
     const ROLES_INFO = {
-      SuperAdmin: { name: 'Super Administrador', desc: 'Acceso total a todos los centros, registros financieros, reportes y módulo de administración de usuarios/roles.', badgeBg: 'bg-purple-100 text-purple-800' },
-      AdminCentro: { name: 'Administrador de Centro', desc: 'Acceso completo para registrar y ver ingresos/egresos únicamente de su Centro asignado.', badgeBg: 'bg-blue-100 text-blue-800' },
-      Auditor: { name: 'Auditor / Revisor', desc: 'Acceso de solo lectura a los dashboards y reportes de todos los centros para fiscalización.', badgeBg: 'bg-amber-100 text-amber-800' },
-      Operador: { name: 'Operador / Auxiliar', desc: 'Permiso para registrar transacciones de ingresos/egresos, sin acceso a modificaciones estructurales.', badgeBg: 'bg-emerald-100 text-emerald-800' },
+      SuperAdmin: { name: 'Super Administrador', desc: 'Acceso total a todos los centros, registros financieros y gestión de usuarios.', badgeBg: 'bg-purple-100 text-purple-800' },
+      AdminCentro: { name: 'Administrador de Centro', desc: 'Acceso completo únicamente a su Centro asignado.', badgeBg: 'bg-blue-100 text-blue-800' },
+      Auditor: { name: 'Auditor / Revisor', desc: 'Acceso global de solo lectura.', badgeBg: 'bg-amber-100 text-amber-800' },
+      Operador: { name: 'Operador / Auxiliar', desc: 'Permiso para cargar movimientos sin cambiar configuración.', badgeBg: 'bg-emerald-100 text-emerald-800' },
     };
 
-    // APP STATE
     let currentUser = users[0];
     let activeTab = 'dashboard';
     let modalTxType = 'ingreso';
 
-    // Chart instances
     let barChartInstance = null;
     let pieChartInstance = null;
 
-    // --- INITIALIZATION ---
     window.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons();
       populateUserSimulatorSelect();
       updateUserContextUI();
-      renderDashboard();
-      renderCentersTab();
-      renderAdminTab();
+      renderCurrentTab();
     });
 
-    // Helper: Get Center Name
     function getCenterName(id) {
       if (id === 'ALL') return 'Todos los Centros';
       const c = centers.find(item => item.id === id);
       return c ? c.name : 'Desconocido';
     }
 
-    // Populate User Selector in Navbar
     function populateUserSimulatorSelect() {
       const select = document.getElementById('userSimSelect');
       select.innerHTML = users.map(u => `
@@ -946,7 +854,6 @@
       `).join('');
     }
 
-    // Switch Simulated User
     function changeSimulatedUser(userId) {
       const found = users.find(u => u.id === userId);
       if (found) {
@@ -960,14 +867,11 @@
       }
     }
 
-    // Update Header and UI permissions
     function updateUserContextUI() {
-      // Role Badge
       const roleBadge = document.getElementById('roleBadgeContainer');
       const rInfo = ROLES_INFO[currentUser.role];
       roleBadge.innerHTML = `<span class="px-2.5 py-1 rounded-full text-xs font-semibold ${rInfo?.badgeBg}">${rInfo?.name}</span>`;
 
-      // Top Banner
       const title = document.getElementById('currentAccessTitle');
       const desc = document.getElementById('currentAccessDesc');
       const btnHeader = document.getElementById('btnNewTransactionHeader');
@@ -980,14 +884,12 @@
 
       desc.innerHTML = `Bienvenido, <strong class="text-slate-700">${currentUser.name}</strong>. ${currentUser.role === 'Auditor' ? 'Modo revisión activa (Solo lectura).' : 'Gestión de registros contables y presupuesto.'}`;
 
-      // Show/Hide New Transaction button
       if (currentUser.role === 'Auditor') {
         btnHeader.classList.add('hidden');
       } else {
         btnHeader.classList.remove('hidden');
       }
 
-      // Show/Hide Admin Tab
       const tabAdmin = document.getElementById('tabBtn-admin');
       if (currentUser.role === 'SuperAdmin') {
         tabAdmin.classList.remove('hidden');
@@ -995,7 +897,6 @@
         tabAdmin.classList.add('hidden');
       }
 
-      // Populate selects for filter dropdowns
       populateCenterDropdowns();
     }
 
@@ -1009,7 +910,9 @@
 
       dashSelect.innerHTML = optionsHtml;
       txSelect.innerHTML = optionsHtml;
-      if (bgSelect) bgSelect.innerHTML = optionsHtml;
+      if (bgSelect) {
+        bgSelect.innerHTML = centers.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+      }
 
       if (currentUser.centerId !== 'ALL') {
         dashSelect.value = currentUser.centerId;
@@ -1025,9 +928,10 @@
         txSelect.disabled = false;
         if (bgSelect) bgSelect.disabled = false;
       }
+
+      document.getElementById('badgeCentersCount').innerText = centers.length;
     }
 
-    // Navigation Switcher
     function switchTab(tabName) {
       activeTab = tabName;
       ['dashboard', 'budget', 'transactions', 'centers', 'admin'].forEach(t => {
@@ -1055,7 +959,6 @@
       if (activeTab === 'admin') renderAdminTab();
     }
 
-    // Get Filtered Transactions based on current user & active UI filters
     function getFilteredTransactions() {
       const centerFilterVal = currentUser.centerId !== 'ALL' ? currentUser.centerId : document.getElementById('dashCenterFilter').value;
       const scopeFilterVal = document.getElementById('dashScopeFilter').value;
@@ -1068,7 +971,6 @@
       });
     }
 
-    // --- TAB 1: RENDER DASHBOARD ---
     function renderDashboard() {
       const list = getFilteredTransactions();
 
@@ -1080,11 +982,9 @@
       document.getElementById('kpiEgresos').innerText = `$${totalEgresos.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
       document.getElementById('kpiBalance').innerText = `$${balance.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
 
-      // Render Charts
       renderBarChart();
       renderPieChart(list);
 
-      // Render Recent List
       const recentList = document.getElementById('recentTransactionsList');
       const recent = [...list].slice(0, 4);
       
@@ -1114,252 +1014,135 @@
           </div>
         </div>
       `).join('');
-
+      
       lucide.createIcons();
     }
 
-    // Chart.js Bar Chart
-    function renderBarChart() {
-      const ctx = document.getElementById('barChartCanvas').getContext('2d');
-      if (barChartInstance) barChartInstance.destroy();
-
-      const scopeVal = document.getElementById('dashScopeFilter').value;
-      const labels = centers.map(c => c.name.replace('Centro ', '').replace('Residencia ', ''));
-      
-      const dataIngresos = centers.map(c => {
-        return transactions.filter(t => t.centerId === c.id && t.type === 'ingreso' && (scopeVal === 'ALL' || t.scope === scopeVal)).reduce((a, b) => a + b.amount, 0);
-      });
-      const dataEgresos = centers.map(c => {
-        return transactions.filter(t => t.centerId === c.id && t.type === 'egreso' && (scopeVal === 'ALL' || t.scope === scopeVal)).reduce((a, b) => a + b.amount, 0);
-      });
-
-      barChartInstance = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: labels,
-          datasets: [
-            { label: 'Ingresos', data: dataIngresos, backgroundColor: '#10b981', borderRadius: 4 },
-            { label: 'Egresos', data: dataEgresos, backgroundColor: '#f43f5e', borderRadius: 4 }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { position: 'bottom', labels: { font: { size: 11 } } }
-          },
-          scales: {
-            x: { grid: { display: false } },
-            y: { ticks: { callback: (val) => '$' + val } }
-          }
-        }
-      });
-    }
-
-    // Chart.js Pie Chart
-    function renderPieChart(filteredList) {
-      const ctx = document.getElementById('pieChartCanvas').getContext('2d');
-      if (pieChartInstance) pieChartInstance.destroy();
-
-      const catMap = {};
-      filteredList.forEach(t => {
-        catMap[t.category] = (catMap[t.category] || 0) + t.amount;
-      });
-
-      const labels = Object.keys(catMap);
-      const data = Object.values(catMap);
-
-      pieChartInstance = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-          labels: labels,
-          datasets: [{
-            data: data,
-            backgroundColor: ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d', '#e11d48', '#059669', '#d97706']
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { position: 'bottom', labels: { font: { size: 10 } } }
-          }
-        }
-      });
-    }
-
-    // --- TAB: PRESUPUESTO ANUAL (REAL VS PLAN) ---
     function renderBudgetTab() {
+      const centerId = document.getElementById('budgetCenterFilter').value || (centers[0]?.id);
       const scope = document.getElementById('budgetScopeFilter').value;
-      const centerId = currentUser.centerId !== 'ALL' ? currentUser.centerId : document.getElementById('budgetCenterFilter').value;
-      
+      const monthFilter = document.getElementById('budgetMonthFilter').value;
+
       document.getElementById('budgetTypeLabel').innerText = `Contabilidad ${scope}`;
 
-      const catPlanIngresos = annualBudgetPlan[scope].ingreso;
-      const catPlanEgresos = annualBudgetPlan[scope].egreso;
+      const categories = [
+        ...categoriesByScope[scope].ingreso.map(c => ({ name: c, type: 'ingreso' })),
+        ...categoriesByScope[scope].egreso.map(c => ({ name: c, type: 'egreso' }))
+      ];
 
-      // Real executed calculations
-      const realTx = transactions.filter(t => {
-        if (t.scope !== scope) return false;
-        if (currentUser.centerId !== 'ALL' && t.centerId !== currentUser.centerId) return false;
-        if (centerId !== 'ALL' && t.centerId !== centerId) return false;
-        return true;
-      });
+      const centerPlan = centerBudgets[centerId]?.[scope] || { ingreso: {}, egreso: {} };
 
       let totalPlanned = 0;
       let totalExecuted = 0;
 
-      const rows = [];
-
-      // Ingresos rows
-      Object.keys(catPlanIngresos).forEach(cat => {
-        const planned = catPlanIngresos[cat];
-        const real = realTx.filter(t => t.type === 'ingreso' && t.category === cat).reduce((sum, t) => sum + t.amount, 0);
-        const diff = planned - real;
-        const pct = planned > 0 ? Math.min(Math.round((real / planned) * 100), 200) : 0;
+      const rows = categories.map(cat => {
+        let annualPlan = centerPlan[cat.type]?.[cat.name] || 0;
+        let periodPlan = monthFilter === 'ALL' ? annualPlan : (annualPlan / 12);
         
-        totalPlanned += planned;
-        totalExecuted += real;
+        let executed = transactions
+          .filter(t => t.centerId === centerId && t.scope === scope && t.type === cat.type && t.category === cat.name)
+          .reduce((sum, t) => sum + t.amount, 0);
 
-        rows.push({ category: cat, type: 'ingreso', planned, real, diff, pct });
-      });
+        totalPlanned += periodPlan;
+        totalExecuted += executed;
 
-      // Egresos rows
-      Object.keys(catPlanEgresos).forEach(cat => {
-        const planned = catPlanEgresos[cat];
-        const real = realTx.filter(t => t.type === 'egreso' && t.category === cat).reduce((sum, t) => sum + t.amount, 0);
-        const diff = planned - real;
-        const pct = planned > 0 ? Math.min(Math.round((real / planned) * 100), 200) : 0;
-        
-        totalPlanned += planned;
-        totalExecuted += real;
+        let diff = cat.type === 'ingreso' ? (executed - periodPlan) : (periodPlan - executed);
+        let percent = periodPlan > 0 ? ((executed / periodPlan) * 100).toFixed(1) : 0;
 
-        rows.push({ category: cat, type: 'egreso', planned, real, diff, pct });
-      });
+        return `
+          <tr class="hover:bg-slate-50">
+            <td class="py-3 px-4 font-semibold text-slate-800">${cat.name}</td>
+            <td class="py-3 px-4">
+              <span class="px-2 py-0.5 rounded text-xs font-bold ${cat.type === 'ingreso' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                ${cat.type === 'ingreso' ? 'Ingreso' : 'Egreso'}
+              </span>
+            </td>
+            <td class="py-3 px-4 text-right font-bold text-slate-700">$${periodPlan.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+            <td class="py-3 px-4 text-right font-bold ${cat.type === 'ingreso' ? 'text-emerald-600' : 'text-rose-600'}">$${executed.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+            <td class="py-3 px-4 text-right font-bold ${diff >= 0 ? 'text-emerald-600' : 'text-rose-600'}">$${diff.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+            <td class="py-3 px-4 text-center">
+              <span class="font-bold text-xs ${percent > 100 ? 'text-rose-600' : 'text-indigo-600'}">${percent}%</span>
+            </td>
+          </tr>
+        `;
+      }).join('');
 
-      // Update KPI Cards
+      document.getElementById('budgetTableBody').innerHTML = rows;
       document.getElementById('bgTotalPlanned').innerText = `$${totalPlanned.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
       document.getElementById('bgTotalExecuted').innerText = `$${totalExecuted.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
       
-      const overallPct = totalPlanned > 0 ? ((totalExecuted / totalPlanned) * 100).toFixed(1) : 0;
-      document.getElementById('bgTotalPercent').innerText = `${overallPct}%`;
-
-      // Render Table
-      const tbody = document.getElementById('budgetTableBody');
-      tbody.innerHTML = rows.map(r => `
-        <tr class="hover:bg-slate-50 transition">
-          <td class="py-3 px-4 font-bold text-slate-800">${r.category}</td>
-          <td class="py-3 px-4">
-            <span class="px-2 py-0.5 rounded-full text-xs font-semibold ${r.type === 'ingreso' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
-              ${r.type === 'ingreso' ? 'Ingreso' : 'Egreso'}
-            </span>
-          </td>
-          <td class="py-3 px-4 text-right font-semibold text-slate-700">$${r.planned.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
-          <td class="py-3 px-4 text-right font-bold text-amber-600">$${r.real.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
-          <td class="py-3 px-4 text-right font-medium text-slate-600">$${r.diff.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
-          <td class="py-3 px-4">
-            <div class="flex items-center space-x-2">
-              <div class="w-full bg-slate-100 rounded-full h-2">
-                <div class="h-2 rounded-full ${r.pct > 100 ? 'bg-rose-500' : 'bg-amber-500'}" style="width: ${Math.min(r.pct, 100)}%"></div>
-              </div>
-              <span class="text-xs font-bold text-slate-700 w-9 text-right">${r.pct}%</span>
-            </div>
-          </td>
-        </tr>
-      `).join('');
+      const overallPercent = totalPlanned > 0 ? ((totalExecuted / totalPlanned) * 100).toFixed(1) : 0;
+      document.getElementById('bgTotalPercent').innerText = `${overallPercent}%`;
     }
 
-    // --- TAB 2: RENDER TRANSACTIONS TABLE ---
     function renderTransactionsTable() {
       const search = document.getElementById('txSearchInput').value.toLowerCase();
-      const centerFilter = currentUser.centerId !== 'ALL' ? currentUser.centerId : document.getElementById('txCenterFilter').value;
-      const typeFilter = document.getElementById('txTypeFilter').value;
       const scopeFilter = document.getElementById('txScopeFilter').value;
+      const centerFilter = document.getElementById('txCenterFilter').value;
+      const typeFilter = document.getElementById('txTypeFilter').value;
+      const accountFilter = document.getElementById('txAccountFilter').value;
 
       const filtered = transactions.filter(t => {
         if (currentUser.centerId !== 'ALL' && t.centerId !== currentUser.centerId) return false;
         if (centerFilter !== 'ALL' && t.centerId !== centerFilter) return false;
-        if (typeFilter !== 'ALL' && t.type !== typeFilter) return false;
         if (scopeFilter !== 'ALL' && t.scope !== scopeFilter) return false;
-        if (search) {
-          return (
-            t.description.toLowerCase().includes(search) ||
-            t.category.toLowerCase().includes(search) ||
-            t.registeredBy.toLowerCase().includes(search)
-          );
-        }
+        if (typeFilter !== 'ALL' && t.type !== typeFilter) return false;
+        if (accountFilter !== 'ALL' && t.account !== accountFilter) return false;
+        if (search && !t.description.toLowerCase().includes(search) && !t.category.toLowerCase().includes(search)) return false;
         return true;
       });
 
       document.getElementById('badgeTxCount').innerText = filtered.length;
-      const tbody = document.getElementById('txTableBody');
 
+      const tbody = document.getElementById('txTableBody');
       if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colSpan="8" class="py-8 text-center text-slate-400">No se encontraron transacciones.</td></tr>`;
+        tbody.innerHTML = `<tr><td colSpan="9" class="py-6 text-center text-slate-400">No se encontraron transacciones.</td></tr>`;
         return;
       }
 
       tbody.innerHTML = filtered.map(t => `
-        <tr class="hover:bg-slate-50 transition">
-          <td class="py-3.5 px-4 font-medium text-slate-600 whitespace-nowrap">${t.date}</td>
-          <td class="py-3.5 px-4 font-semibold text-slate-800 whitespace-nowrap">${getCenterName(t.centerId)}</td>
-          <td class="py-3.5 px-4 whitespace-nowrap">
-            <span class="px-2 py-0.5 rounded text-xs font-semibold ${t.scope === 'Institucional' ? 'bg-indigo-50 text-indigo-700 border border-indigo-200' : 'bg-purple-50 text-purple-700 border border-purple-200'}">
-              ${t.scope || 'Institucional'}
-            </span>
-          </td>
-          <td class="py-3.5 px-4 whitespace-nowrap">
-            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${t.type === 'ingreso' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
-              ${t.type === 'ingreso' ? 'Ingreso' : 'Egreso'}
-            </span>
-          </td>
-          <td class="py-3.5 px-4 text-slate-600 font-medium">${t.category}</td>
-          <td class="py-3.5 px-4 text-slate-800">${t.description}</td>
-          <td class="py-3.5 px-4 text-right font-bold whitespace-nowrap ${t.type === 'ingreso' ? 'text-emerald-600' : 'text-rose-600'}">
-            ${t.type === 'ingreso' ? '+' : '-'}$${t.amount.toLocaleString('en-US', {minimumFractionDigits: 2})}
-          </td>
-          <td class="py-3.5 px-4 text-center text-xs text-slate-500">${t.registeredBy}</td>
+        <tr class="hover:bg-slate-50">
+          <td class="py-3 px-4 font-medium text-slate-600">${t.date}</td>
+          <td class="py-3 px-4 font-bold text-slate-800">${getCenterName(t.centerId)}</td>
+          <td class="py-3 px-4 font-medium text-slate-700">${t.account || 'Caja Chica (Cash USD)'}</td>
+          <td class="py-3 px-4"><span class="bg-amber-100 text-amber-800 text-xs font-semibold px-2 py-0.5 rounded">${t.scope || 'Institucional'}</span></td>
+          <td class="py-3 px-4"><span class="px-2 py-0.5 rounded text-xs font-bold ${t.type === 'ingreso' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">${t.type === 'ingreso' ? 'Ingreso' : 'Egreso'}</span></td>
+          <td class="py-3 px-4 text-slate-600">${t.category}</td>
+          <td class="py-3 px-4 text-slate-800 font-medium">${t.description}</td>
+          <td class="py-3 px-4 text-right font-bold ${t.type === 'ingreso' ? 'text-emerald-600' : 'text-rose-600'}">${t.type === 'ingreso' ? '+' : '-'}$${t.amount.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+          <td class="py-3 px-4 text-center text-xs text-slate-500">${t.registeredBy}</td>
         </tr>
       `).join('');
     }
 
     function resetTxFilters() {
       document.getElementById('txSearchInput').value = '';
+      document.getElementById('txScopeFilter').value = 'ALL';
       if (currentUser.centerId === 'ALL') document.getElementById('txCenterFilter').value = 'ALL';
       document.getElementById('txTypeFilter').value = 'ALL';
-      document.getElementById('txScopeFilter').value = 'ALL';
+      document.getElementById('txAccountFilter').value = 'ALL';
       renderTransactionsTable();
     }
 
-    // --- TAB 3: RENDER CENTERS ---
     function renderCentersTab() {
-      document.getElementById('badgeCentersCount').innerText = centers.length;
       const grid = document.getElementById('centersGrid');
-      
-      const btnNewCenter = document.getElementById('btnNewCenter');
-      if (currentUser.role === 'SuperAdmin') {
-        btnNewCenter.classList.remove('hidden');
-      } else {
-        btnNewCenter.classList.add('hidden');
-      }
-
-      grid.innerHTML = centers.map(center => {
-        const cIngresos = transactions.filter(t => t.centerId === center.id && t.type === 'ingreso').reduce((a, b) => a + b.amount, 0);
-        const cEgresos = transactions.filter(t => t.centerId === center.id && t.type === 'egreso').reduce((a, b) => a + b.amount, 0);
+      grid.innerHTML = centers.map(c => {
+        const cIngresos = transactions.filter(t => t.centerId === c.id && t.type === 'ingreso').reduce((a, t) => a + t.amount, 0);
+        const cEgresos = transactions.filter(t => t.centerId === c.id && t.type === 'egreso').reduce((a, t) => a + t.amount, 0);
         const cBalance = cIngresos - cEgresos;
-        const percent = ((cEgresos / center.budget) * 100).toFixed(1);
+        const percent = ((cEgresos / c.budget) * 100).toFixed(1);
 
         return `
           <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4">
             <div class="flex justify-between items-start">
               <div>
-                <span class="text-xs text-amber-600 font-bold uppercase">${center.city}</span>
-                <h4 class="text-base font-bold text-slate-800">${center.name}</h4>
-                <p class="text-xs text-slate-500 mt-0.5">Encargado: ${center.director}</p>
+                <span class="text-xs text-amber-600 font-bold uppercase">${c.city}</span>
+                <h4 class="text-base font-bold text-slate-800">${c.name}</h4>
+                <p class="text-xs text-slate-500 mt-0.5">Encargado: ${c.director}</p>
               </div>
-              <span class="p-2 bg-slate-100 rounded-lg text-slate-600">
+              <div class="p-2.5 bg-amber-50 rounded-lg text-amber-700">
                 <i data-lucide="building-2" class="w-5 h-5"></i>
-              </span>
+              </div>
             </div>
 
             <div class="grid grid-cols-3 gap-2 bg-slate-50 p-3 rounded-lg text-center">
@@ -1379,39 +1162,20 @@
 
             <div>
               <div class="flex justify-between text-xs mb-1 font-medium">
-                <span class="text-slate-500">Ejecución Presupuestaria Anual</span>
-                <span class="text-slate-700 font-bold">${percent}% de $${center.budget.toLocaleString()}</span>
+                <span class="text-slate-500">Ejecución Presupuestaria</span>
+                <span class="text-slate-700 font-bold">${percent}% de $${c.budget.toLocaleString()}</span>
               </div>
               <div class="w-full bg-slate-100 rounded-full h-2">
-                <div 
-                  class="h-2 rounded-full ${Number(percent) > 90 ? 'bg-rose-500' : 'bg-amber-500'}"
-                  style="width: ${Math.min(Number(percent), 100)}%"
-                ></div>
+                <div className="h-2 rounded-full ${percent > 90 ? 'bg-rose-500' : 'bg-amber-500'}" style="width: ${Math.min(percent, 100)}%"></div>
               </div>
             </div>
           </div>
         `;
       }).join('');
-
       lucide.createIcons();
     }
 
-    // --- TAB 4: RENDER ADMIN TAB ---
     function renderAdminTab() {
-      document.getElementById('usersCount').innerText = users.length;
-      
-      // Roles matrix
-      const matrix = document.getElementById('rolesMatrixContainer');
-      matrix.innerHTML = Object.keys(ROLES_INFO).map(key => `
-        <div class="border border-slate-200 p-4 rounded-lg bg-slate-50/50">
-          <span class="inline-block px-2 py-0.5 rounded text-xs font-bold mb-2 ${ROLES_INFO[key].badgeBg}">
-            ${ROLES_INFO[key].name}
-          </span>
-          <p class="text-xs text-slate-600 leading-relaxed">${ROLES_INFO[key].desc}</p>
-        </div>
-      `).join('');
-
-      // Users table
       const tbody = document.getElementById('usersTableBody');
       tbody.innerHTML = users.map(u => `
         <tr class="hover:bg-slate-50">
@@ -1422,36 +1186,72 @@
               ${ROLES_INFO[u.role]?.name}
             </span>
           </td>
-          <td class="py-3 px-4 text-slate-700 font-medium">
-            ${u.centerId === 'ALL' ? '🌐 Acceso Global' : getCenterName(u.centerId)}
-          </td>
+          <td class="py-3 px-4 text-slate-700 font-medium">${u.centerId === 'ALL' ? '🌐 Acceso Global' : getCenterName(u.centerId)}</td>
           <td class="py-3 px-4 text-center">
-            <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-0.5 rounded-full font-bold">
-              ${u.status}
-            </span>
+            <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-0.5 rounded-full font-bold">${u.status}</span>
           </td>
         </tr>
       `).join('');
     }
 
-    // --- MODAL HANDLERS ---
+    function renderBarChart() {
+      const ctx = document.getElementById('barChart').getContext('2d');
+      if (barChartInstance) barChartInstance.destroy();
+
+      const labels = centers.map(c => c.name.replace('Centro Cultural ', '').replace('Residencia Universitaria ', ''));
+      const ingresosData = centers.map(c => transactions.filter(t => t.centerId === c.id && t.type === 'ingreso').reduce((a, t) => a + t.amount, 0));
+      const egresosData = centers.map(c => transactions.filter(t => t.centerId === c.id && t.type === 'egreso').reduce((a, t) => a + t.amount, 0));
+
+      barChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            { label: 'Ingresos', data: ingresosData, backgroundColor: '#10b981', borderRadius: 4 },
+            { label: 'Egresos', data: egresosData, backgroundColor: '#f43f5e', borderRadius: 4 }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom' } }
+        }
+      });
+    }
+
+    function renderPieChart(list) {
+      const ctx = document.getElementById('pieChart').getContext('2d');
+      if (pieChartInstance) pieChartInstance.destroy();
+
+      const catMap = {};
+      list.forEach(t => {
+        catMap[t.category] = (catMap[t.category] || 0) + t.amount;
+      });
+
+      pieChartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(catMap),
+          datasets: [{
+            data: Object.values(catMap),
+            backgroundColor: ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d']
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } }
+        }
+      });
+    }
+
+    // Modal Control Functions
     function openTransactionModal() {
-      const selectCenter = document.getElementById('formTxCenter');
-      selectCenter.innerHTML = centers.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-      
-      if (currentUser.centerId !== 'ALL') {
-        selectCenter.value = currentUser.centerId;
-        selectCenter.disabled = true;
-      } else {
-        selectCenter.disabled = false;
-      }
-
-      setTxType('ingreso');
-      updateFormCategories();
+      const select = document.getElementById('formTxCenter');
+      select.innerHTML = centers.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+      if (currentUser.centerId !== 'ALL') select.value = currentUser.centerId;
       document.getElementById('formTxDate').value = new Date().toISOString().split('T')[0];
-      document.getElementById('formTxAmount').value = '';
-      document.getElementById('formTxDesc').value = '';
-
+      updateFormCategories();
       document.getElementById('modalTransaction').classList.remove('hidden');
     }
 
@@ -1461,62 +1261,87 @@
 
     function setTxType(type) {
       modalTxType = type;
-      const btnIngreso = document.getElementById('btnTypeIngreso');
-      const btnEgreso = document.getElementById('btnTypeEgreso');
-
+      const btnIn = document.getElementById('btnTypeIngreso');
+      const btnOut = document.getElementById('btnTypeEgreso');
       if (type === 'ingreso') {
-        btnIngreso.className = "p-3 rounded-lg border text-sm font-bold flex items-center justify-center space-x-2 bg-emerald-50 border-emerald-500 text-emerald-700";
-        btnEgreso.className = "p-3 rounded-lg border text-sm font-bold flex items-center justify-center space-x-2 border-slate-200 text-slate-500";
+        btnIn.className = "p-3 rounded-lg border text-sm font-bold flex items-center justify-center space-x-2 bg-emerald-50 border-emerald-500 text-emerald-700";
+        btnOut.className = "p-3 rounded-lg border text-sm font-bold flex items-center justify-center space-x-2 border-slate-200 text-slate-500";
       } else {
-        btnEgreso.className = "p-3 rounded-lg border text-sm font-bold flex items-center justify-center space-x-2 bg-rose-50 border-rose-500 text-rose-700";
-        btnIngreso.className = "p-3 rounded-lg border text-sm font-bold flex items-center justify-center space-x-2 border-slate-200 text-slate-500";
+        btnOut.className = "p-3 rounded-lg border text-sm font-bold flex items-center justify-center space-x-2 bg-rose-50 border-rose-500 text-rose-700";
+        btnIn.className = "p-3 rounded-lg border text-sm font-bold flex items-center justify-center space-x-2 border-slate-200 text-slate-500";
       }
-
       updateFormCategories();
     }
 
     function updateFormCategories() {
       const scope = document.getElementById('formTxScope').value;
       const catSelect = document.getElementById('formTxCategory');
-      const catList = categoriesByScope[scope][modalTxType];
-
-      catSelect.innerHTML = catList.map(c => `<option value="${c}">${c}</option>`).join('');
+      catSelect.innerHTML = categoriesByScope[scope][modalTxType].map(c => `<option value="${c}">${c}</option>`).join('');
     }
 
     function handleSaveTransaction(e) {
       e.preventDefault();
-      const centerId = document.getElementById('formTxCenter').value;
-      const scope = document.getElementById('formTxScope').value;
-      const category = document.getElementById('formTxCategory').value;
       const amount = parseFloat(document.getElementById('formTxAmount').value);
-      const date = document.getElementById('formTxDate').value;
-      const description = document.getElementById('formTxDesc').value;
+      if (!amount) return;
 
-      if (!amount || amount <= 0) return;
-
-      const newTx = {
+      transactions.unshift({
         id: 't' + (transactions.length + 1),
-        centerId,
-        scope,
+        centerId: document.getElementById('formTxCenter').value,
+        scope: document.getElementById('formTxScope').value,
         type: modalTxType,
-        category,
-        amount,
-        date,
-        description,
+        account: document.getElementById('formTxAccount').value,
+        category: document.getElementById('formTxCategory').value,
+        amount: amount,
+        date: document.getElementById('formTxDate').value,
+        description: document.getElementById('formTxDesc').value,
         registeredBy: currentUser.name
-      };
+      });
 
-      transactions.unshift(newTx);
       closeTransactionModal();
       renderCurrentTab();
     }
 
-    // Modal User
+    function openBudgetEditModal() {
+      const select = document.getElementById('formBudgetCenter');
+      select.innerHTML = centers.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+      updateFormBudgetCategories();
+      document.getElementById('modalBudgetEdit').classList.remove('hidden');
+    }
+
+    function closeBudgetEditModal() {
+      document.getElementById('modalBudgetEdit').classList.add('hidden');
+    }
+
+    function updateFormBudgetCategories() {
+      const scope = document.getElementById('formBudgetScope').value;
+      const type = document.getElementById('formBudgetType').value;
+      const select = document.getElementById('formBudgetCategory');
+      select.innerHTML = categoriesByScope[scope][type].map(c => `<option value="${c}">${c}</option>`).join('');
+    }
+
+    function calculateMonthlyBudget(val) {
+      const amount = parseFloat(val) || 0;
+      document.getElementById('formBudgetMonthlyCalculated').value = `$${(amount / 12).toFixed(2)} / mes`;
+    }
+
+    function handleSaveBudgetPlan(e) {
+      e.preventDefault();
+      const centerId = document.getElementById('formBudgetCenter').value;
+      const scope = document.getElementById('formBudgetScope').value;
+      const type = document.getElementById('formBudgetType').value;
+      const category = document.getElementById('formBudgetCategory').value;
+      const amount = parseFloat(document.getElementById('formBudgetAnnualAmount').value);
+
+      if (!centerBudgets[centerId]) centerBudgets[centerId] = { Institucional: { ingreso: {}, egreso: {} }, Personal: { ingreso: {}, egreso: {} } };
+      if (!centerBudgets[centerId][scope]) centerBudgets[centerId][scope] = { ingreso: {}, egreso: {} };
+
+      centerBudgets[centerId][scope][type][category] = amount;
+      closeBudgetEditModal();
+      renderBudgetTab();
+    }
+
     function openUserModal() {
-      const selectCenter = document.getElementById('formUserCenter');
-      selectCenter.innerHTML = centers.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-      document.getElementById('formUserName').value = '';
-      document.getElementById('formUserEmail').value = '';
+      document.getElementById('formUserCenter').innerHTML = centers.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
       document.getElementById('modalUser').classList.remove('hidden');
     }
 
@@ -1536,32 +1361,21 @@
 
     function handleSaveUser(e) {
       e.preventDefault();
-      const name = document.getElementById('formUserName').value;
-      const email = document.getElementById('formUserEmail').value;
       const role = document.getElementById('formUserRole').value;
-      const centerId = (role === 'SuperAdmin' || role === 'Auditor') ? 'ALL' : document.getElementById('formUserCenter').value;
-
-      const newUser = {
+      users.push({
         id: 'u' + (users.length + 1),
-        name,
-        email,
-        role,
-        centerId,
+        name: document.getElementById('formUserName').value,
+        email: document.getElementById('formUserEmail').value,
+        role: role,
+        centerId: (role === 'SuperAdmin' || role === 'Auditor') ? 'ALL' : document.getElementById('formUserCenter').value,
         status: 'Activo'
-      };
-
-      users.push(newUser);
+      });
       populateUserSimulatorSelect();
       closeUserModal();
       renderAdminTab();
     }
 
-    // Modal Center
     function openCenterModal() {
-      document.getElementById('formCenterName').value = '';
-      document.getElementById('formCenterCity').value = '';
-      document.getElementById('formCenterDirector').value = '';
-      document.getElementById('formCenterBudget').value = '';
       document.getElementById('modalCenter').classList.remove('hidden');
     }
 
@@ -1571,20 +1385,14 @@
 
     function handleSaveCenter(e) {
       e.preventDefault();
-      const name = document.getElementById('formCenterName').value;
-      const city = document.getElementById('formCenterCity').value;
-      const director = document.getElementById('formCenterDirector').value;
-      const budget = parseFloat(document.getElementById('formCenterBudget').value);
-
-      const newCenter = {
-        id: 'c' + (centers.length + 1),
-        name,
-        city,
-        director,
-        budget
-      };
-
-      centers.push(newCenter);
+      const id = 'c' + (centers.length + 1);
+      centers.push({
+        id: id,
+        name: document.getElementById('formCenterName').value,
+        city: document.getElementById('formCenterCity').value,
+        director: document.getElementById('formCenterDirector').value,
+        budget: parseFloat(document.getElementById('formCenterBudget').value)
+      });
       populateCenterDropdowns();
       closeCenterModal();
       renderCentersTab();
